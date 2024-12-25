@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text } from "react-native";
 import { Calendar, LocaleConfig } from "react-native-calendars";
 
-
+// ! PARA PROBAR EL CORRECTO FUNCIONANMIENTO DE GIT
 LocaleConfig.locales["es"] = {
   monthNames: [
     "Enero",

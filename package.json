@@ -2,7 +2,7 @@
   "name": "la_agenda_del_pintor",
   "license": "0BSD",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -13,6 +13,7 @@
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/native": "^7.0.14",
+    "axios": "^1.7.9",
     "expo": "~52.0.20",
     "expo-status-bar": "~2.0.0",
     "react": "18.3.1",
@@ -22,7 +23,9 @@
     "react-native-paper": "^5.12.5",
     "react-native-reanimated": "^3.16.6",
     "react-native-safe-area-context": "^5.0.0",
-    "react-navigation": "^5.0.0"
+    "react-navigation": "^5.0.0",
+    "react-redux": "^9.2.0",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -1,4 +1,4 @@
-import * as React from "react";
+/* import * as React from "react";
 import { FAB, Portal, PaperProvider } from "react-native-paper";
 
 const FabGroupComponent = () => {
@@ -13,7 +13,7 @@ const FabGroupComponent = () => {
       <Portal>
         <FAB.Group
           open={open}
-          visible
+          visible={true}
           icon={open ? "calendar-today" : "plus"}
           actions={[
             {
@@ -49,7 +49,7 @@ const FabGroupComponent = () => {
             }
           }}
           fabStyle={{ backgroundColor: "#008b8b" }}
-          backdropColor="rgba(0, 139, 139, 0.06)"
+          
         />
       </Portal>
     </PaperProvider>
@@ -57,3 +57,4 @@ const FabGroupComponent = () => {
 };
 
 export default FabGroupComponent;
+ */

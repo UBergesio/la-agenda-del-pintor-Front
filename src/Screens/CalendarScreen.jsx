@@ -1,13 +1,13 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import CalendarComponent from "../Components/CalendarComponent";
-import FabGroupComponent from "../Components/FabGroupComponent";
+
 
 const CalendarScreen = () => {
   return (
     <View style={styles.container}>
+      {/* Calendario ocupa toda la pantalla */}
       <CalendarComponent />
-      <FabGroupComponent />
     </View>
   );
 };
@@ -15,7 +15,11 @@ const CalendarScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1, // Asegura que el contenedor ocupe toda la pantalla
-    justifyContent: "space-between", // Asegura que los componentes estén correctamente espaciados
+  },
+  fab: {
+    position: "absolute", // Hace que el FAB sea independiente del resto del diseño
+    right: 16, // Separación desde el borde derecho
+    bottom: 16, // Separación desde el borde inferior
   },
 });
 

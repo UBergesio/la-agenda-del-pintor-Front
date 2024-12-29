@@ -12,6 +12,7 @@ import ProfileScreen from "../Screens/ProfileScreen";
 // Componentes personalizados
 import CustomHeader from "./CustomHeader"; // Componente para el encabezado
 import ProfileDrawer from "./ProfileDrawer"; // Componente para el Drawer
+import FabGroupComponent from "./FabGroupComponent";
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();

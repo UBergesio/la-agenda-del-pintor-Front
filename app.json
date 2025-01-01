@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.la_agenda_del_pintor"
     },
     "web": {
       "favicon": "./assets/favicon.png"

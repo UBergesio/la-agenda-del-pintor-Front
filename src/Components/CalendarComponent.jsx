@@ -1,39 +1,44 @@
-import React, { useState } from "react";
+import CalendarLocale from "../utils/CalendarLocale";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Agenda } from "react-native-calendars";
 import { FAB, Portal, Provider as PaperProvider } from "react-native-paper";
 import EventModal from "./EventModal";
+import { useDispatch, useSelector } from "react-redux";
 
 const CalendarComponent = () => {
-  const [items, setItems] = useState({});  // Estado que almacena los eventos
+  const [items, setItems] = useState({}); // Estado que almacena los eventos
   const [fabOpen, setFabOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
 
-  // Función para cargar los elementos de la agenda
-  const loadItems = (day) => {
-    // Esta función solo actualizará los eventos para el día que estás viendo, sin crear eventos automáticos.
-    const newItems = { ...items };
-  
-    // Aquí puedes agregar la lógica de carga de eventos desde una base de datos o cualquier otra fuente externa.
-    // Por ejemplo:
-    // if (newItems[day.dateString]) {
-    //   setItems(newItems);
-    // }
-  
-    // Si no hay eventos previos, no agregar nada para ese día.
-    setItems(newItems);
-  };
+  const dates = useSelector((state) => state.dates); // Accede a las fechas desde Redux
+  const dispatch = useDispatch(); // Para despachar acciones si es necesario
+
+  useEffect(() => {
+    if (dates.length > 0) {
+      // Si hay fechas en el estado global, actualiza los eventos
+      const updatedItems = { ...items };
+      dates.forEach((date) => {
+        const formattedDate = new Date(date).toISOString().split("T")[0]; // Formatea la fecha
+        if (!updatedItems[formattedDate]) {
+          updatedItems[formattedDate] = []; // Crea una lista si no existe para esa fecha
+        }
+       
+      });
+      setItems(updatedItems); // Actualiza el estado de los eventos
+    }
+  }, [dates]); // Reaccionar a cambios en `dates`
 
   const addEvent = (eventName, eventDate) => {
+    const formattedDate = new Date(eventDate).toISOString().split("T")[0]; // Formatea la fecha
     const newItems = { ...items };
-    if (!newItems[eventDate]) {
-      newItems[eventDate] = [];
+    if (!newItems[formattedDate]) {
+      newItems[formattedDate] = []; // Crea una lista para esa fecha si no existe
     }
-    newItems[eventDate].push({ name: eventName, height: 50 });  // Ejemplo simple de evento
-    setItems(newItems);  // Actualiza el estado con los nuevos eventos
+    newItems[formattedDate].push({ name: eventName, height: 50 }); // Agrega el evento
+    setItems(newItems); // Actualiza el estado de los eventos
   };
 
-  // Renderiza cada elemento en la agenda
   const renderItem = (item) => {
     return (
       <View style={styles.item}>
@@ -42,17 +47,24 @@ const CalendarComponent = () => {
     );
   };
 
+  const renderEmptyData = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>No hay reservas para este día</Text>
+    </View>
+  );
+
   return (
     <PaperProvider>
       <View style={styles.container}>
         {/* Agenda */}
         <Agenda
           items={items}
+          keyExtractor={(item, index) => `${item.name}-${index}`} // Usa una clave única
           showClosingKnob={true}
           hideKnob={false}
-          loadItemsForMonth={loadItems}
           selected={new Date().toISOString().split("T")[0]}
           renderItem={renderItem}
+          renderEmptyData={renderEmptyData} // Mostrar un mensaje cuando no hay eventos
           theme={{
             agendaDayTextColor: "#008b8b",
             agendaDayNumColor: "#008b8b",
@@ -64,11 +76,11 @@ const CalendarComponent = () => {
           futureScrollRange={12}
         />
 
-        {/* Modal integrado */}
+        {/* Modal para agregar eventos */}
         <EventModal
           visible={modalVisible}
           setModalVisible={setModalVisible}
-          addEvent={addEvent}   // Pasar la función addEvent al modal
+          addEvent={addEvent} // Pasar la función `addEvent` al modal
         />
 
         {/* FAB flotante */}
@@ -81,26 +93,26 @@ const CalendarComponent = () => {
               {
                 icon: "plus",
                 label: "Agregar trabajo",
-                onPress: () => setModalVisible(true),  // Abre el modal al presionar el FAB
-                style: { backgroundColor: "#a8e8e8" },
+                onPress: () => setModalVisible(true), // Abre el modal al presionar el FAB
+                style: { backgroundColor: "rgb(0, 176, 189)" },
               },
               {
                 icon: "account-arrow-right",
                 label: "Pasar al siguiente trabajo",
                 onPress: () => console.log("Pasar al siguiente trabajo"),
-                style: { backgroundColor: "#a8e8e8" },
+                style: { backgroundColor: "rgb(0, 176, 189)" },
               },
               {
                 icon: "account-arrow-left",
                 label: "Días atrasados",
                 onPress: () => console.log("Días atrasados"),
-                style: { backgroundColor: "#a8e8e8" },
+                style: { backgroundColor: "rgb(0, 176, 189)" },
               },
               {
                 icon: "account-cancel",
                 label: "Quitar trabajo",
                 onPress: () => console.log("Quitar trabajo"),
-                style: { backgroundColor: "#a8e8e8" },
+                style: { backgroundColor: "rgb(0, 176, 189)" },
               },
             ]}
             onStateChange={({ open }) => setFabOpen(open)}
@@ -132,6 +144,15 @@ const styles = StyleSheet.create({
   },
   fab: {
     backgroundColor: "#008b8b",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 18,
+    color: "#888",
   },
 });
 

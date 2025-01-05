@@ -20,7 +20,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.la_agenda_del_pintor"
+      "useNextNotificationsApi": true,
+      "permissions": [],
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-3940256099942544~3347511713"
+      },
+      "package": "com.anonymous.la_agenda_del_pintor",
+      "allowBackup": true,
+    "usesCleartextTraffic": false
     },
     "web": {
       "favicon": "./assets/favicon.png"

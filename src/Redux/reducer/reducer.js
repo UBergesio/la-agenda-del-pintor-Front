@@ -1,10 +1,14 @@
-import { ADD_DATE, ADD_ITEMS } from "../types/types";
-
+import {
+  ADD_DATE,
+  ADD_ITEMS,
+  ADD_NAME_EVENT,
+  ADD_ALL_DATES,
+} from "../types/types";
 
 const initialState = {
   dates: [],
+  nameEvents: [],
 };
-console.log("reduce global este " + initialState.dates);
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -13,6 +17,18 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         dates: [...state.dates, action.payload], // Agrega una nueva fecha
       };
+    case ADD_NAME_EVENT:
+      return {
+        ...state,
+        nameEvents: [...state.nameEvents, action.payload], // Agrega un nuevo nombre de evento
+      };
+
+    case ADD_ALL_DATES:
+      return {
+        ...state,
+        dates: [...state.dates, action.payload], // Agrega una las fechas que tiene el server
+      };
+
     default:
       return state;
   }

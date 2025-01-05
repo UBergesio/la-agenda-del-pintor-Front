@@ -7,24 +7,26 @@ import { View } from "react-native-web";
 import { useSelector } from "react-redux";
 
 const EventModal = ({ visible, setModalVisible, addEvent }) => {
-  const [eventName, setEventName] = useState("");  // Almacena el nombre del evento
-  /* const [eventDate, setEventDate] = useState("");  */ // Almacena la fecha del evento
-//Redux
-const dates = useSelector((state) => state.dates); // Obtiene las fechas del estado global
+  const [eventName, setEventName] = useState(""); // Almacena el nombre del evento
+  // Redux
+  const dates = useSelector((state) => state.dates); // Obtiene las fechas del estado global
 
   const handleAddEvent = () => {
-    if (eventName && /* eventDate */ dates.length > 0) {  // Verifica que el nombre y la fecha no estén vacíos
-      addEvent(eventName, /* eventDate */ dates);  // Llama la función para agregar el evento
-      setModalVisible(false);  // Cierra el modal
+    if (eventName && /* eventDate */ dates.length > 0) {
+      // Verifica que el nombre y la fecha no estén vacíos
+      // Usamos la última fecha seleccionada desde Redux (suponiendo que puede haber múltiples fechas)
+      const eventDate = dates[dates.length - 1];
+      addEvent(eventName, eventDate); // Llama a la función para agregar el evento
+      setModalVisible(false); // Cierra el modal
     } else {
-      alert("Por favor ingresa un nombre y una fecha para el evento.");;
+      alert("Por favor ingresa un nombre y una fecha para el evento.");
     }
   };
 
   return (
     <Modal
       visible={visible}
-      onDismiss={() => setModalVisible(false)}  // Cierra el modal al hacer clic fuera
+      onDismiss={() => setModalVisible(false)} // Cierra el modal al hacer clic fuera
       contentContainerStyle={styles.modalContainer}
     >
       <TextInput
@@ -33,19 +35,23 @@ const dates = useSelector((state) => state.dates); // Obtiene las fechas del est
         onChangeText={setEventName}
         style={styles.input}
       />
-      <DateSelector /* setEventDate={setEventDate} *//>
-
-      <Button style={styles.buttonOpen} onPress={handleAddEvent}><Text>Agregar</Text></Button>
-      <Button style={styles.buttonClose} onPress={() => setModalVisible(false)}><Text>Cerrar</Text></Button> {/* Cerrar el modal */}
+      <DateSelector />
+      <Button style={styles.buttonOpen} onPress={handleAddEvent}>
+        <Text>Agregar</Text>
+      </Button>
+      <Button style={styles.buttonClose} onPress={() => setModalVisible(false)}>
+        <Text>Cerrar</Text>
+      </Button>{" "}
+      {/* Cerrar el modal */}
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
   modalContainer: {
-    backgroundColor: 'white', 
+    backgroundColor: "white",
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   input: {
     height: 20, // Ajusta la altura para que sea visible
@@ -54,14 +60,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     width: "280",
-    backgroundColor: 'rgba(0, 68, 255, 0.25)',
+    backgroundColor: "rgba(0, 68, 255, 0.25)",
   },
   buttonOpen: {
-    backgroundColor: 'rgba(0, 189, 57, 0.56)',
+    backgroundColor: "rgba(0, 189, 57, 0.56)",
     marginTop: 10,
   },
   buttonClose: {
-    backgroundColor: 'rgba(189, 28, 0, 0.56)',
+    backgroundColor: "rgba(189, 28, 0, 0.56)",
     marginTop: 10,
   },
 });

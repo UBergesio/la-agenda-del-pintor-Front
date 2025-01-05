@@ -1,20 +1,29 @@
+// LIBRERIAS
 import CalendarLocale from "../utils/CalendarLocale";
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Agenda } from "react-native-calendars";
 import { FAB, Portal, Provider as PaperProvider } from "react-native-paper";
-import EventModal from "./EventModal";
+import { Agenda } from "react-native-calendars";
 import { useDispatch, useSelector } from "react-redux";
 
+// COMPONENTES
+import EventModal from "./EventModal";
+
+// REDUX
+import { addAllDates } from "../Redux/actions/actions";
+
+// COMPONENTE PRINCIPAL
 const CalendarComponent = () => {
-  const [items, setItems] = useState({}); // Estado que almacena los eventos
+  const [items, setItems] = useState({}); // Estado que almacena las fechas y eventos
   const [fabOpen, setFabOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
 
-  const dates = useSelector((state) => state.dates); // Accede a las fechas desde Redux
   const dispatch = useDispatch(); // Para despachar acciones si es necesario
+  const dates = useSelector((state) => state.dates); // Accede a las fechas desde Redux
 
   useEffect(() => {
+    dispatch(addAllDates(dispatch)); // Obtiene las fechas del servidor
+    
     if (dates.length > 0) {
       // Si hay fechas en el estado global, actualiza los eventos
       const updatedItems = { ...items };
@@ -23,11 +32,10 @@ const CalendarComponent = () => {
         if (!updatedItems[formattedDate]) {
           updatedItems[formattedDate] = []; // Crea una lista si no existe para esa fecha
         }
-       
       });
       setItems(updatedItems); // Actualiza el estado de los eventos
     }
-  }, [dates]); // Reaccionar a cambios en `dates`
+  }, []); // Reaccionar a cambios en `dates`
 
   const addEvent = (eventName, eventDate) => {
     const formattedDate = new Date(eventDate).toISOString().split("T")[0]; // Formatea la fecha

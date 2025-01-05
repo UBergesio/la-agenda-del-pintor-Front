@@ -19,7 +19,7 @@ const DateSelector = ({ setEventDate }) => {
 
   // Función que se llama cuando el usuario selecciona una fecha
   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate; // Fecha seleccionada por el usuario
+    const currentDate = selectedDate; // Fecha seleccionada por el usuario    
     setShow(false); // Ocultar el DatePicker una vez que se selecciona la fecha
     setDate(currentDate); // Actualizar el estado local con la fecha seleccionada
     dispatch(addDate(currentDate)); // Guardar la fecha en el estado global de Redux

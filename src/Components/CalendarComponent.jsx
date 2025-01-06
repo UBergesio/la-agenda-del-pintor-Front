@@ -14,38 +14,15 @@ import { addAllDates } from "../Redux/actions/actions";
 
 // COMPONENTE PRINCIPAL
 const CalendarComponent = () => {
-  const [items, setItems] = useState({}); // Estado que almacena las fechas y eventos
   const [fabOpen, setFabOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
 
+  const jobs = useSelector((state) => state.jobs); // Accede a las fechas desde Redux
   const dispatch = useDispatch(); // Para despachar acciones si es necesario
-  const dates = useSelector((state) => state.dates); // Accede a las fechas desde Redux
 
   useEffect(() => {
-    dispatch(addAllDates(dispatch)); // Obtiene las fechas del servidor
-    
-    if (dates.length > 0) {
-      // Si hay fechas en el estado global, actualiza los eventos
-      const updatedItems = { ...items };
-      dates.forEach((date) => {
-        const formattedDate = new Date(date).toISOString().split("T")[0]; // Formatea la fecha
-        if (!updatedItems[formattedDate]) {
-          updatedItems[formattedDate] = []; // Crea una lista si no existe para esa fecha
-        }
-      });
-      setItems(updatedItems); // Actualiza el estado de los eventos
-    }
-  }, []); // Reaccionar a cambios en `dates`
-
-  const addEvent = (eventName, eventDate) => {
-    const formattedDate = new Date(eventDate).toISOString().split("T")[0]; // Formatea la fecha
-    const newItems = { ...items };
-    if (!newItems[formattedDate]) {
-      newItems[formattedDate] = []; // Crea una lista para esa fecha si no existe
-    }
-    newItems[formattedDate].push({ name: eventName, height: 50 }); // Agrega el evento
-    setItems(newItems); // Actualiza el estado de los eventos
-  };
+    dispatch(addAllDates()); // Obtiene las fechas del servidor
+  }, []);
 
   const renderItem = (item) => {
     return (
@@ -66,7 +43,7 @@ const CalendarComponent = () => {
       <View style={styles.container}>
         {/* Agenda */}
         <Agenda
-          items={items}
+          items={jobs}
           keyExtractor={(item, index) => `${item.name}-${index}`} // Usa una clave única
           showClosingKnob={true}
           hideKnob={false}
@@ -88,7 +65,6 @@ const CalendarComponent = () => {
         <EventModal
           visible={modalVisible}
           setModalVisible={setModalVisible}
-          addEvent={addEvent} // Pasar la función `addEvent` al modal
         />
 
         {/* FAB flotante */}

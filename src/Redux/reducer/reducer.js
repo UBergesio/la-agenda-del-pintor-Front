@@ -1,34 +1,29 @@
-import {
-  ADD_DATE,
-  ADD_ITEMS,
-  ADD_NAME_EVENT,
-  ADD_ALL_DATES,
-} from "../types/types";
+import { ADD_ALL_DATES, ADD_JOB } from "../types/types";
 
 const initialState = {
-  dates: [],
-  nameEvents: [],
+  jobs: {},
 };
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_DATE:
+    case ADD_JOB:
+      const { name, date } = action.payload;
+
+      // Si ya existe la fecha, se agrega el nuevo trabajo al array correspondiente
+      const existingJobs = state.jobs[date] || [];
       return {
         ...state,
-        dates: [...state.dates, action.payload], // Agrega una nueva fecha
-      };
-    case ADD_NAME_EVENT:
-      return {
-        ...state,
-        nameEvents: [...state.nameEvents, action.payload], // Agrega un nuevo nombre de evento
+        jobs: {
+          ...state.jobs,
+          [date]: [...existingJobs, { name }], //Agrega el nuevo trabajo
+        },
       };
 
     case ADD_ALL_DATES:
       return {
         ...state,
-        dates: [...state.dates, action.payload], // Agrega una las fechas que tiene el server
+        jobs: { ...state.jobs, ...action.payload }, // Agrega una las fechas que tiene el server
       };
-
     default:
       return state;
   }

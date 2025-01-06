@@ -1,25 +1,31 @@
+//Librerias
 import React, { useState } from "react";
 import { Modal, Text, TextInput, Button } from "react-native-paper";
 import { StyleSheet } from "react-native";
-import DateSelector from "./DateSelector";
 import { View } from "react-native-web";
+import { useDispatch } from "react-redux";
+// Componentes
+import DateSelector from "./DateSelector";
+// Redux
+import { addJob } from "../Redux/actions/actions";
 
-import { useSelector } from "react-redux";
-
-const EventModal = ({ visible, setModalVisible, addEvent }) => {
+const EventModal = ({ visible, setModalVisible }) => {
   const [eventName, setEventName] = useState(""); // Almacena el nombre del evento
-  // Redux
-  const dates = useSelector((state) => state.dates); // Obtiene las fechas del estado global
+  const [eventDate, setEventDate] = useState(null); // Fecha del trabajo seleccionada
+
+  const dispatch = useDispatch();
 
   const handleAddEvent = () => {
-    if (eventName && /* eventDate */ dates.length > 0) {
-      // Verifica que el nombre y la fecha no estén vacíos
-      // Usamos la última fecha seleccionada desde Redux (suponiendo que puede haber múltiples fechas)
-      const eventDate = dates[dates.length - 1];
-      addEvent(eventName, eventDate); // Llama a la función para agregar el evento
+    if (eventName && eventDate) {
+      const formattedDate = eventDate.toISOString().split("T")[0];
+      // Despacha el nombre y la fecha juntos al estado global
+      dispatch(addJob({ name: eventName, date: formattedDate }));
+
+      setEventName(""); // Limpia el modal
+      setEventDate(null); // Limpia la fecha
       setModalVisible(false); // Cierra el modal
     } else {
-      alert("Por favor ingresa un nombre y una fecha para el evento.");
+      alert("Por favor ingresa un nombre y selecciona una fecha.");
     }
   };
 
@@ -30,12 +36,12 @@ const EventModal = ({ visible, setModalVisible, addEvent }) => {
       contentContainerStyle={styles.modalContainer}
     >
       <TextInput
-        placeholder="Nombre de obra"
+        placeholder="Nombre de trabajo"
         value={eventName}
         onChangeText={setEventName}
         style={styles.input}
       />
-      <DateSelector />
+      <DateSelector onDateSelect={setEventDate} />
       <Button style={styles.buttonOpen} onPress={handleAddEvent}>
         <Text>Agregar</Text>
       </Button>

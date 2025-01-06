@@ -7,3 +7,5 @@ export const ADD_ITEMS = "ADD ITEMS"
 
 
 export const ADD_ALL_DATES = "ADD ALL DATES"
+
+export const ADD_JOB = "ADD_JOB"

@@ -3,32 +3,26 @@ import React, { useState } from "react";
 import { SafeAreaView, Button, Text, StyleSheet } from "react-native";
 import DatePicker from "@react-native-community/datetimepicker";
 import { TextInput } from "react-native-paper";
-import { useDispatch } from "react-redux";
 
-// Redux
-import { addDate } from "../Redux/actions/actions"; // Acción para guardar la fecha en el estado global
-
-const DateSelector = ({ setEventDate }) => {
-  // Estados locales
+const DateSelector = ({ onDateSelect }) => {
   const [date, setDate] = useState(new Date()); // Almacena la fecha seleccionada
   const [show, setShow] = useState(false); // Controla la visibilidad del DatePicker
-  const [showDaysInput, setShowDaysInput] = useState(false); // Controla la visibilidad del input para ingresar días
+  const [showDaysInput, setShowDaysInput] = useState(false); // Controla la visibilidad del input para ingresar días para sumar
   const [number, onChangeNumber] = useState(0); // Almacena el número de días que se sumarán a la fecha
-
-  const dispatch = useDispatch(); // hook para despachar acciones de Redux
 
   // Función que se llama cuando el usuario selecciona una fecha
   const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate; // Fecha seleccionada por el usuario    
+    const currentDate = selectedDate; // Fecha seleccionada por el usuario
+    const dateWithoutTime = new Date(currentDate.setHours(0, 0, 0, 0)); // Elimina la hora
     setShow(false); // Ocultar el DatePicker una vez que se selecciona la fecha
-    setDate(currentDate); // Actualizar el estado local con la fecha seleccionada
-    dispatch(addDate(currentDate)); // Guardar la fecha en el estado global de Redux
+    setDate(dateWithoutTime); // Actualizar la fecha en el estado local
+    onDateSelect(dateWithoutTime); // Envía la fecha seleccionada al componente padre
   };
 
   // Muestra el DatePicker con el modo seleccionado (en este caso "date")
   const showMode = (currentMode) => {
     setShow(true); // Muestra el DatePicker
-   };
+  };
 
   // Función para mostrar el DatePicker de fecha inicial
   const showInitpicker = () => {
@@ -45,9 +39,11 @@ const DateSelector = ({ setEventDate }) => {
   return (
     <SafeAreaView>
       {/* Botón para seleccionar la fecha de inicio de obra */}
-      <Button onPress={showInitpicker} title="Seleccionar inicio de obra" />
-      <Text style={styles.text}>Inicio de obra: {date.toLocaleDateString()}</Text> {/* Muestra la fecha seleccionada */}
-
+      <Button onPress={showInitpicker} title="Seleccionar inicio de trabajo" />
+      <Text style={styles.text}>
+        Inicio de obra: {date.toLocaleDateString()}
+      </Text>{" "}
+      {/* Muestra la fecha seleccionada */}
       {/* Botón para ingresar el número de días */}
       <Button
         onPress={() => {
@@ -55,7 +51,6 @@ const DateSelector = ({ setEventDate }) => {
         }}
         title="Cuántos días lleva?"
       />
-      
       {/* Campo de texto para ingresar el número de días, solo visible si se ha presionado el botón anterior */}
       {showDaysInput && (
         <TextInput
@@ -67,12 +62,12 @@ const DateSelector = ({ setEventDate }) => {
           placeholder="Agregue los días de trabajo" // Placeholder en el campo de texto
         />
       )}
-
       {/* Muestra la fecha de fin de obra solo si se ha ingresado un número de días */}
       {number && (
-        <Text style={styles.text}>Fin de obra: {calculateEndDate().toLocaleDateString()}</Text>
+        <Text style={styles.text}>
+          Fin de obra: {calculateEndDate().toLocaleDateString()}
+        </Text>
       )}
-
       {/* Muestra el DatePicker si el estado "show" es verdadero */}
       {show && (
         <DatePicker
@@ -93,12 +88,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     width: 280, // Ajuste de ancho
-    backgroundColor: 'rgba(0, 68, 255, 0.25)', // Color de fondo del input
+    backgroundColor: "rgba(0, 68, 255, 0.25)", // Color de fondo del input
   },
   text: {
     fontSize: 18,
     margin: 15,
-    fontStyle: 'italic', // Estilo en cursiva para el texto
+    fontStyle: "italic", // Estilo en cursiva para el texto
   },
 });
 

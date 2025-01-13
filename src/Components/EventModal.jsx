@@ -19,7 +19,7 @@ const EventModal = ({ visible, setModalVisible }) => {
     if (eventName && eventDate) {
       const formattedDate = eventDate.toISOString().split("T")[0];
       // Despacha el nombre y la fecha juntos al estado global
-      dispatch(addJob({ name: eventName, date: formattedDate }));
+      dispatch(addJob({ name: eventName, initialDate: formattedDate }));
 
       setEventName(""); // Limpia el modal
       setEventDate(null); // Limpia la fecha

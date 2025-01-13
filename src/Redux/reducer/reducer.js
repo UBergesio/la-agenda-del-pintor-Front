@@ -6,18 +6,16 @@ const initialState = {
 
 const rootReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_JOB:
-      const { name, date } = action.payload;
-
-      // Si ya existe la fecha, se agrega el nuevo trabajo al array correspondiente
-      const existingJobs = state.jobs[date] || [];
-      return {
-        ...state,
-        jobs: {
-          ...state.jobs,
-          [date]: [...existingJobs, { name }], //Agrega el nuevo trabajo
-        },
-      };
+      case ADD_JOB:
+        const { initialDate, name } = action.payload;
+        const existingJobs = state.jobs[initialDate] || [];
+        return {
+          ...state,
+          jobs: {
+            ...state.jobs,
+            [initialDate]: [...existingJobs, { name }], // Agrega el nuevo trabajo
+          },
+        };
 
     case ADD_ALL_DATES:
       return {

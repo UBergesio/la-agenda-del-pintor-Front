@@ -11,6 +11,7 @@ import EventModal from "./EventModal";
 
 // REDUX
 import { addAllDates } from "../Redux/actions/actions";
+import { backgroundColor } from "react-native-calendars/src/style";
 
 // COMPONENTE PRINCIPAL
 const CalendarComponent = () => {
@@ -20,14 +21,80 @@ const CalendarComponent = () => {
   const jobs = useSelector((state) => state.jobs); // Accede a las fechas desde Redux
   const dispatch = useDispatch(); // Para despachar acciones si es necesario
 
+
+
+
+
+
+
+
+
+
+
+
   useEffect(() => {
     dispatch(addAllDates()); // Obtiene las fechas del servidor
   }, []);
 
+  const events = [
+    { name: "Evento 1", startDate: "2025-01-06", endDate: "2025-01-16" },
+    { name: "Evento 2", startDate: "2025-01-07", endDate: "2025-01-14" },
+  ];
+
+  const [agendaItems, setAgendaItems] = useState({});
+  const [markedDates, setMarkedDates] = useState({});
+
+  useEffect(() => {
+    const items = {};
+    const marks = {};
+
+    events.forEach((event) => {
+      let currentDate = new Date(event.startDate);
+      const endDate = new Date(event.endDate);
+
+      while (currentDate <= endDate) {
+        const dateString = currentDate.toISOString().split("T")[0];
+
+        // Construir los items para la lista de eventos
+        if (!items[dateString]) {
+          items[dateString] = [];
+        }
+        items[dateString].push({ name: event.name, date: dateString });
+
+        // Construir los marcadores para el período
+        if (!marks[dateString]) {
+          marks[dateString] = { periods: [] };
+        }
+        marks[dateString].periods.push({
+          startingDay: dateString === event.startDate,
+          endingDay: dateString === event.endDate,
+          color: event.name === "Evento 1" ? "#FF6347" : "#4682B4", // Colores para diferenciar eventos
+        });
+
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    });
+
+    setAgendaItems(items);
+    setMarkedDates(marks);
+  }, []);
+
+
+
+
+
+
+
+
+
+
   const renderItem = (item) => {
     return (
-      <View style={styles.item}>
-        <Text>{item.name}</Text>
+      <View style={styles.itemContainer}>
+        <View style={styles.separator} />
+        <View style={styles.item}>
+          <Text style={styles.eventName}>{item.name}</Text>
+        </View>
       </View>
     );
   };
@@ -43,7 +110,10 @@ const CalendarComponent = () => {
       <View style={styles.container}>
         {/* Agenda */}
         <Agenda
-          items={jobs}
+          style={styles.agenda}
+          markingType="multi-period"
+          markedDates={markedDates}
+          items={agendaItems}
           keyExtractor={(item, index) => `${item.name}-${index}`} // Usa una clave única
           showClosingKnob={true}
           hideKnob={false}
@@ -56,16 +126,34 @@ const CalendarComponent = () => {
             agendaTodayColor: "red",
             agendaKnobColor: "#008b8b",
             selectedDayBackgroundColor: "#008b8b",
-          }}
+            
+              'stylesheet.agenda.main': {
+                header: {
+                  overflow: 'hidden',
+                  justifyContent: 'flex-end',
+                  position: 'absolute',
+                  height: '102%',
+                  width: '100%'
+                },
+                knobContainer: {
+                  flex: 1,
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  height: 24,
+                  bottom: 0,
+                  alignItems: 'center',
+                  backgroundColor: "rgba(255, 255, 255, 0.48)"
+              },
+              },
+            }}
+          
           pastScrollRange={12}
           futureScrollRange={12}
         />
 
         {/* Modal para agregar eventos */}
-        <EventModal
-          visible={modalVisible}
-          setModalVisible={setModalVisible}
-        />
+        <EventModal visible={modalVisible} setModalVisible={setModalVisible} />
 
         {/* FAB flotante */}
         <Portal>
@@ -137,6 +225,15 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     color: "#888",
+  },
+  itemContainer: {
+    marginBottom: 8,
+    marginTop: 8,
+  },
+  separator: {
+    height: 1.5, // Altura de la línea
+    backgroundColor: "#ccc", // Color de la línea
+    marginVertical: 9, // Espaciado alrededor de la línea
   },
 });
 

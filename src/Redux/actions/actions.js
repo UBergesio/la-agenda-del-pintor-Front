@@ -3,29 +3,36 @@ import { ADD_JOB } from "../types/types";
 
 import { ADD_ALL_DATES } from "../types/types";
 
-const ENDPOINT = "http://localhost:3001/";
+const ENDPOINT = "http://192.168.0.175:3001/";
 
-export const addJob = (job) => ({
-  type: ADD_JOB,
-  payload: job,
-});
+export const addJob = (job) => {
+  const { name, initialDate } = job;
+  return async (dispatch) => {
+    try {
+      const response = await axios.post(`${ENDPOINT}job`, {
+        name,
+        initialDate,
+      });
+      const { job } = response.data;
+
+      return dispatch({ type: ADD_JOB, payload: job });
+    } catch (error) {
+      console.error("Error ", error.message);
+      alert(error.message);
+    }
+  };
+};
 
 export const addAllDates = () => {
   return async (dispatch) => {
     try {
-      const response = await fetch("http://192.168.0.175:3001/");
-      if (!response.ok) {
-        throw new Error(
-          `Error en la red: ${response.status} ${response.statusText}`
-        );
-      }
+      const response = await axios.get(ENDPOINT);
+      const data = response.data;
 
-      const data = await response.json();
-      console.log("Datos obtenidos:", data);
-      dispatch({ type: ADD_ALL_DATES, payload: data }); // Envía el objeto de fechas al reducer
+      dispatch({ type: ADD_ALL_DATES, payload: data });
     } catch (error) {
-      console.error("Error al obtener las fechas:", error.message);
-      alert("Error al obtener las fechas: " + error.message);
+      console.error("Error ", error.message);
+      alert("Error " + error.message);
     }
   };
 };

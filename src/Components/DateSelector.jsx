@@ -20,13 +20,13 @@ const DateSelector = ({ onDateSelect }) => {
   };
 
   // Muestra el DatePicker con el modo seleccionado (en este caso "date")
-  const showMode = (currentMode) => {
+ /*  const showMode = (currentMode) => {
     setShow(true); // Muestra el DatePicker
-  };
+  }; */
 
   // Función para mostrar el DatePicker de fecha inicial
   const showInitpicker = () => {
-    showMode("date"); // Llamar a showMode con el modo "date"
+    setShow(true); // Llamar a showMode con el modo "date"
   };
 
   // Función para calcular la fecha de fin de obra, sumando el número de días ingresados

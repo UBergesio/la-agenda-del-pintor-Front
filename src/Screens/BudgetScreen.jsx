@@ -1,14 +1,10 @@
 import React from "react";
-import { View, Text } from "react-native";
+import BudgetComponent from "../Components/BudgetComponent/BudgetComponent.jsx";
 
 
 const BudgetScreen = () => {
   return (
-    <View>
-      <Text>
-        Presupuestos
-      </Text>
-    </View>
+    <BudgetComponent/>
   )
 }
 

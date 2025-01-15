@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Modal, Text, TextInput, Button } from "react-native-paper";
 import { StyleSheet } from "react-native";
-import { View } from "react-native-web";
 import { useDispatch } from "react-redux";
 // Componentes
 import DateSelector from "./DateSelector";
@@ -12,17 +11,26 @@ import { addJob } from "../Redux/actions/actions";
 const EventModal = ({ visible, setModalVisible }) => {
   const [eventName, setEventName] = useState(""); // Almacena el nombre del evento
   const [eventDate, setEventDate] = useState(null); // Fecha del trabajo seleccionada
+  const [endDate, setEndDate] = useState(null); // Fecha del fin trabajo seleccionada
 
   const dispatch = useDispatch();
 
   const handleAddEvent = () => {
-    if (eventName && eventDate) {
+    if (!eventName || !eventDate || !endDate) {
+      alert("Por favor, completa todos los campos antes de agregar el trabajo.");
+      return;
+    }  
+
+    
+    if (eventName && eventDate && endDate) {
       const formattedDate = eventDate.toISOString().split("T")[0];
+      const formattedEndDate = endDate.toISOString().split("T")[0];
       // Despacha el nombre y la fecha juntos al estado global
-      dispatch(addJob({ name: eventName, initialDate: formattedDate }));
+      dispatch(addJob({ name: eventName, startDate: formattedDate, endDate: formattedEndDate }));
 
       setEventName(""); // Limpia el modal
       setEventDate(null); // Limpia la fecha
+      setEndDate(null); // Limpia la fecha de fin
       setModalVisible(false); // Cierra el modal
     } else {
       alert("Por favor ingresa un nombre y selecciona una fecha.");
@@ -41,7 +49,7 @@ const EventModal = ({ visible, setModalVisible }) => {
         onChangeText={setEventName}
         style={styles.input}
       />
-      <DateSelector onDateSelect={setEventDate} />
+      <DateSelector onDateSelect={setEventDate} onEndDateSelect={setEndDate}/>
       <Button style={styles.buttonOpen} onPress={handleAddEvent}>
         <Text>Agregar</Text>
       </Button>
@@ -58,6 +66,11 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     alignItems: "center",
+    borderRadius:39,
+    margin:15,
+    borderWidth: 3,
+    borderColor: 'rgb(196, 220, 221)',
+    backgroundColor: 'rgb(231, 238, 238)',
   },
   input: {
     height: 20, // Ajusta la altura para que sea visible

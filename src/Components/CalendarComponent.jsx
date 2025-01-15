@@ -1,5 +1,5 @@
 // LIBRERIAS
-import CalendarLocale from "../utils/CalendarLocale";
+import "../utils/CalendarLocale";
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { FAB, Portal, Provider as PaperProvider } from "react-native-paper";
@@ -11,82 +11,21 @@ import EventModal from "./EventModal";
 
 // REDUX
 import { addAllDates } from "../Redux/actions/actions";
-import { backgroundColor } from "react-native-calendars/src/style";
 
 // COMPONENTE PRINCIPAL
 const CalendarComponent = () => {
   const [fabOpen, setFabOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false); // Estado para controlar la visibilidad del modal
 
-  const jobs = useSelector((state) => state.jobs); // Accede a las fechas desde Redux
-  const dispatch = useDispatch(); // Para despachar acciones si es necesario
+  const agendaItems = useSelector((state) => state.agendaItems);
+  const markedDates = useSelector((state) => state.markedDates);
+  const dispatch = useDispatch();
 
-
-
-
-
-
-
-
-
-
-
+  console.log(agendaItems);
 
   useEffect(() => {
-    dispatch(addAllDates()); // Obtiene las fechas del servidor
-  }, []);
-
-  const events = [
-    { name: "Evento 1", startDate: "2025-01-06", endDate: "2025-01-16" },
-    { name: "Evento 2", startDate: "2025-01-07", endDate: "2025-01-14" },
-  ];
-
-  const [agendaItems, setAgendaItems] = useState({});
-  const [markedDates, setMarkedDates] = useState({});
-
-  useEffect(() => {
-    const items = {};
-    const marks = {};
-
-    events.forEach((event) => {
-      let currentDate = new Date(event.startDate);
-      const endDate = new Date(event.endDate);
-
-      while (currentDate <= endDate) {
-        const dateString = currentDate.toISOString().split("T")[0];
-
-        // Construir los items para la lista de eventos
-        if (!items[dateString]) {
-          items[dateString] = [];
-        }
-        items[dateString].push({ name: event.name, date: dateString });
-
-        // Construir los marcadores para el período
-        if (!marks[dateString]) {
-          marks[dateString] = { periods: [] };
-        }
-        marks[dateString].periods.push({
-          startingDay: dateString === event.startDate,
-          endingDay: dateString === event.endDate,
-          color: event.name === "Evento 1" ? "#FF6347" : "#4682B4", // Colores para diferenciar eventos
-        });
-
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-    });
-
-    setAgendaItems(items);
-    setMarkedDates(marks);
-  }, []);
-
-
-
-
-
-
-
-
-
+    dispatch(addAllDates());
+  }, [dispatch]);
 
   const renderItem = (item) => {
     return (
@@ -110,44 +49,42 @@ const CalendarComponent = () => {
       <View style={styles.container}>
         {/* Agenda */}
         <Agenda
-          style={styles.agenda}
           markingType="multi-period"
           markedDates={markedDates}
           items={agendaItems}
-          keyExtractor={(item, index) => `${item.name}-${index}`} // Usa una clave única
+          keyExtractor={(item, index) => `${item.name}-${index}`}
           showClosingKnob={true}
           hideKnob={false}
           selected={new Date().toISOString().split("T")[0]}
           renderItem={renderItem}
-          renderEmptyData={renderEmptyData} // Mostrar un mensaje cuando no hay eventos
+          renderEmptyData={renderEmptyData}
           theme={{
             agendaDayTextColor: "#008b8b",
             agendaDayNumColor: "#008b8b",
             agendaTodayColor: "red",
             agendaKnobColor: "#008b8b",
             selectedDayBackgroundColor: "#008b8b",
-            
-              'stylesheet.agenda.main': {
-                header: {
-                  overflow: 'hidden',
-                  justifyContent: 'flex-end',
-                  position: 'absolute',
-                  height: '102%',
-                  width: '100%'
-                },
-                knobContainer: {
-                  flex: 1,
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  height: 24,
-                  bottom: 0,
-                  alignItems: 'center',
-                  backgroundColor: "rgba(255, 255, 255, 0.48)"
+
+            "stylesheet.agenda.main": {
+              header: {
+                overflow: "hidden",
+                justifyContent: "flex-end",
+                position: "absolute",
+                height: "102%",
+                width: "100%",
               },
+              knobContainer: {
+                flex: 1,
+                position: "absolute",
+                left: 0,
+                right: 0,
+                height: 24,
+                bottom: 0,
+                alignItems: "center",
+                backgroundColor: "rgba(255, 255, 255, 0.48)",
               },
-            }}
-          
+            },
+          }}
           pastScrollRange={12}
           futureScrollRange={12}
         />

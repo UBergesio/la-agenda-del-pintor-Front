@@ -1,10 +1,10 @@
 // Librerías necesarias
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView, Button, Text, StyleSheet } from "react-native";
 import DatePicker from "@react-native-community/datetimepicker";
 import { TextInput } from "react-native-paper";
 
-const DateSelector = ({ onDateSelect }) => {
+const DateSelector = ({ onDateSelect, onEndDateSelect }) => {
   const [date, setDate] = useState(new Date()); // Almacena la fecha seleccionada
   const [show, setShow] = useState(false); // Controla la visibilidad del DatePicker
   const [showDaysInput, setShowDaysInput] = useState(false); // Controla la visibilidad del input para ingresar días para sumar
@@ -19,22 +19,28 @@ const DateSelector = ({ onDateSelect }) => {
     onDateSelect(dateWithoutTime); // Envía la fecha seleccionada al componente padre
   };
 
-  // Muestra el DatePicker con el modo seleccionado (en este caso "date")
- /*  const showMode = (currentMode) => {
-    setShow(true); // Muestra el DatePicker
-  }; */
-
   // Función para mostrar el DatePicker de fecha inicial
   const showInitpicker = () => {
     setShow(true); // Llamar a showMode con el modo "date"
   };
 
   // Función para calcular la fecha de fin de obra, sumando el número de días ingresados
-  const calculateEndDate = () => {
+/*   const calculateEndDate = () => {
     const endDate = new Date(date); // Copia la fecha de inicio
     endDate.setDate(endDate.getDate() + parseInt(number)); // Suma el número de días a la fecha de inicio
+    onEndDateSelect(endDate)
     return endDate; // Devuelve la fecha de fin de obra calculada
-  };
+  }; */
+
+  // ! VER SI SE PUEDE HACER ESTA FUNCION EN EL BACK PARA NO CARGAR TANTO EL FRONT
+useEffect(() => {
+  if (number && onEndDateSelect) {
+    const endDate = new Date(date);
+    endDate.setDate(endDate.getDate() + parseInt(number));
+    onEndDateSelect(endDate); // Solo calcula y envía la fecha al cambiar `number`.
+  }
+}, [number, date, onEndDateSelect]);
+
 
   return (
     <SafeAreaView>
@@ -63,11 +69,11 @@ const DateSelector = ({ onDateSelect }) => {
         />
       )}
       {/* Muestra la fecha de fin de obra solo si se ha ingresado un número de días */}
-      {number && (
+      {/* {number && (
         <Text style={styles.text}>
-          Fin de obra: {calculateEndDate().toLocaleDateString()}
+          Fin de obra: {''}
         </Text>
-      )}
+      )} */}
       {/* Muestra el DatePicker si el estado "show" es verdadero */}
       {show && (
         <DatePicker

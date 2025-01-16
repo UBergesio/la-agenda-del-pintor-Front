@@ -21,8 +21,6 @@ const CalendarComponent = () => {
   const markedDates = useSelector((state) => state.markedDates);
   const dispatch = useDispatch();
 
-  console.log(agendaItems);
-
   useEffect(() => {
     dispatch(addAllDates());
   }, [dispatch]);

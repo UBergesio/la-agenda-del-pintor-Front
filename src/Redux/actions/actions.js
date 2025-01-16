@@ -14,9 +14,8 @@ export const addJob = (job) => {
         startDate,
         endDate,
       });
-      const { job } = response.data;
-
-      return dispatch({ type: ADD_JOB, payload: job });
+      const { data } = response;
+      return dispatch({ type: ADD_JOB, payload: data });
     } catch (error) {
       console.error("Error ", error.message);
       alert(error.message);
@@ -26,8 +25,8 @@ export const addJob = (job) => {
 export const addAllDates = () => {
   return async (dispatch) => {
     try {
-      const response = await axios.get(ENDPOINT); // Suponiendo que ya devuelves agendaItems y markedDates
-      const {data} = response;
+      const response = await axios.get(ENDPOINT);
+      const { data } = response;
 
       dispatch({ type: ADD_ALL_DATES, payload: data });
     } catch (error) {
@@ -36,17 +35,3 @@ export const addAllDates = () => {
     }
   };
 };
-/* 
-export const addAllDates = () => {
-  return async (dispatch) => {
-    try {
-      const response = await axios.get(ENDPOINT);
-      const data = response.data;
-
-      dispatch({ type: ADD_ALL_DATES, payload: data });
-    } catch (error) {
-      console.error("Error ", error.message);
-      alert("Error " + error.message);
-    }
-  };
-}; */

@@ -22,7 +22,7 @@ const CalendarComponent = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(addAllDates());
+    dispatch(addAllDates());    
   }, [dispatch]);
 
   const renderItem = (item) => {
@@ -91,7 +91,7 @@ const CalendarComponent = () => {
         <EventModal visible={modalVisible} setModalVisible={setModalVisible} />
 
         {/* FAB flotante */}
-        <Portal>
+        {modalVisible===false && <Portal>
           <FAB.Group
             open={fabOpen}
             visible
@@ -126,7 +126,7 @@ const CalendarComponent = () => {
             fabStyle={styles.fab}
             backdropColor="rgba(0, 0, 0, 0.3)" // Fondo semitransparente
           />
-        </Portal>
+        </Portal>}
       </View>
     </PaperProvider>
   );

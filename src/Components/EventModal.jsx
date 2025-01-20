@@ -1,10 +1,11 @@
 //Librerias
 import React, { useState } from "react";
-import { Modal, Text, TextInput, Button } from "react-native-paper";
-import { StyleSheet } from "react-native";
+import { Modal, TextInput, Button } from "react-native-paper";
+import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { useDispatch } from "react-redux";
+import dayjs from "dayjs";
 // Componentes
-import DateSelector from "./DateSelector";
+import DatePicker from "./DatePicker/DatePicker";
 // Redux
 import { addJob } from "../Redux/actions/actions";
 
@@ -17,24 +18,29 @@ const EventModal = ({ visible, setModalVisible }) => {
 
   const handleAddEvent = () => {
     if (!eventName || !eventDate || !endDate) {
-      alert("Por favor, completa todos los campos antes de agregar el trabajo.");
+      alert(
+        "Por favor, completa todos los campos antes de agregar el trabajo."
+      );
       return;
-    }  
-
-    
-    if (eventName && eventDate && endDate) {
-      const formattedDate = eventDate.toISOString().split("T")[0];
-      const formattedEndDate = endDate.toISOString().split("T")[0];
-      // Despacha el nombre y la fecha juntos al estado global
-      dispatch(addJob({ name: eventName, startDate: formattedDate, endDate: formattedEndDate }));
-
-      setEventName(""); // Limpia el modal
-      setEventDate(null); // Limpia la fecha
-      setEndDate(null); // Limpia la fecha de fin
-      setModalVisible(false); // Cierra el modal
-    } else {
-      alert("Por favor ingresa un nombre y selecciona una fecha.");
     }
+
+    const formattedStartDate = dayjs(eventDate).format("YYYY-MM-DD");
+    const formattedEndDate = dayjs(endDate).format("YYYY-MM-DD");
+
+    // Despacha los datos
+    dispatch(
+      addJob({
+        name: eventName,
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      })
+    );
+
+    // Resetea el estado
+    setEventName("");
+    setEventDate(null);
+    setEndDate(null);
+    setModalVisible(false);
   };
 
   return (
@@ -43,20 +49,46 @@ const EventModal = ({ visible, setModalVisible }) => {
       onDismiss={() => setModalVisible(false)} // Cierra el modal al hacer clic fuera
       contentContainerStyle={styles.modalContainer}
     >
-      <TextInput
-        placeholder="Nombre de trabajo"
-        value={eventName}
-        onChangeText={setEventName}
-        style={styles.input}
-      />
-      <DateSelector onDateSelect={setEventDate} onEndDateSelect={setEndDate}/>
-      <Button style={styles.buttonOpen} onPress={handleAddEvent}>
-        <Text>Agregar</Text>
-      </Button>
-      <Button style={styles.buttonClose} onPress={() => setModalVisible(false)}>
-        <Text>Cerrar</Text>
-      </Button>{" "}
-      {/* Cerrar el modal */}
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        keyboardDismissMode="on-drag"
+      >
+        <TextInput
+          placeholder="Titulo para el trabajo"
+          mode="outlined"
+          value={eventName}
+          onChangeText={setEventName}
+          style={styles.input}
+          theme={{
+            colors: {
+              primary: "blue",
+              underlineColor: "transparent",
+              background: "white", // Fondo del TextInput
+            },
+          }}
+        />
+        <DatePicker
+          onStartDateChange={(date) => setEventDate(date)} // Actualiza la fecha de inicio
+          onEndDateChange={(date) => setEndDate(date)} // Actualiza la fecha de fin
+        />
+        <View style={styles.buttonContainer}>
+          <Button
+            style={styles.buttonClose}
+            mode="contained"
+            onPress={() => setModalVisible(false)}
+          >
+            <Text>Cerrar</Text>
+          </Button>{" "}
+          <Button
+            style={styles.buttonOpen}
+            mode="contained"
+            onPress={handleAddEvent}
+          >
+            <Text>Agregar</Text>
+          </Button>
+          {/* Cerrar el modal */}
+        </View>
+      </ScrollView>
     </Modal>
   );
 };
@@ -66,28 +98,41 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 20,
     alignItems: "center",
-    borderRadius:39,
-    margin:15,
+    borderRadius: 39,
+    margin: 15,
+    marginTop: -20,
     borderWidth: 3,
-    borderColor: 'rgb(196, 220, 221)',
-    backgroundColor: 'rgb(231, 238, 238)',
+    borderColor: "rgb(196, 220, 221)",
+    backgroundColor: "rgb(231, 238, 238)",
+  },
+  scrollViewContent: {
+    alignItems: "center",
   },
   input: {
-    height: 20, // Ajusta la altura para que sea visible
-    margin: 12,
-    marginBottom: 20,
-    padding: 10,
-    borderWidth: 1,
-    width: "280",
-    backgroundColor: "rgba(0, 68, 255, 0.25)",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 15,
+    width: "95%",
+    height: 17,
+    marginBottom: 5,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between", // Espacio entre los botones
+    width: "100%", // Asegúrate de que ocupe todo el ancho del modal
+    paddingHorizontal: 20, // Espaciado horizontal para separar de los bordes
+    marginTop: 20,
   },
   buttonOpen: {
     backgroundColor: "rgba(0, 189, 57, 0.56)",
     marginTop: 10,
+    width: "45%",
   },
   buttonClose: {
     backgroundColor: "rgba(189, 28, 0, 0.56)",
     marginTop: 10,
+    width: "45%",
   },
 });
 

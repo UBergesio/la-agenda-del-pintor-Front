@@ -17,7 +17,7 @@ export const addJob = (job) => {
       const { data } = response;
       return dispatch({ type: ADD_JOB, payload: data });
     } catch (error) {
-      console.error("Error ", error.message);
+      console.error("Error esta aca 2  ", error.message);
       alert(error.message);
     }
   };
@@ -30,8 +30,8 @@ export const addAllDates = () => {
 
       dispatch({ type: ADD_ALL_DATES, payload: data });
     } catch (error) {
-      console.error("Error ", error.message);
-      alert("Error " + error.message);
+      console.error("Error esta aca", error.message);
+      alert("Error esta aca " + error.message);
     }
   };
 };

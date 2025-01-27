@@ -3,13 +3,15 @@ import { View, Text } from "react-native";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { StyleSheet } from "react-native";
-import "dayjs/locale/es";
+import localeObject from "../../utils/Locale";
+
 
 const DatePicker = ({onStartDateChange, onEndDateChange}) => {
   const [range, setRange] = useState({
     startDate: undefined,
     endDate: undefined,
   });
+
 
   const handleDateChange = (params) => {
     setRange({
@@ -40,7 +42,7 @@ const DatePicker = ({onStartDateChange, onEndDateChange}) => {
             Desde:
           </Text>
           {range.startDate
-            ? dayjs(range.startDate).format("  DD [de] MMMM [del] YYYY.")
+            ? dayjs(range.startDate).format("  LLLL")
             : "No seleccionado"}
         </Text>
         <Text>
@@ -48,7 +50,7 @@ const DatePicker = ({onStartDateChange, onEndDateChange}) => {
             Hasta:
           </Text>
           {range.endDate
-            ? dayjs(range.endDate).format("  DD [de] MMMM [del] YYYY.")
+            ? dayjs(range.endDate).format("  LLLL")
             : "No seleccionado"}
         </Text>
       </View>

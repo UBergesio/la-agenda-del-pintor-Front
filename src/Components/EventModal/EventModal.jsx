@@ -1,47 +1,67 @@
 //Librerias
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { Modal, TextInput, Button } from "react-native-paper";
 import { StyleSheet, View, Text, ScrollView } from "react-native";
 import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 // Componentes
-import DatePicker from "./DatePicker/DatePicker";
+import DatePicker from "../DatePicker/DatePicker";
 // Redux
-import { addJob } from "../Redux/actions/actions";
+import { addJob, updateJob } from "../../Redux/actions/actions";
 
-const EventModal = ({ visible, setModalVisible }) => {
+const EventModal = ({ visible, setModalVisible, jobToEdit, /* onSave */ }) => {
   const [eventName, setEventName] = useState(""); // Almacena el nombre del evento
   const [eventDate, setEventDate] = useState(null); // Fecha del trabajo seleccionada
   const [endDate, setEndDate] = useState(null); // Fecha del fin trabajo seleccionada
 
   const dispatch = useDispatch();
 
-  const handleAddEvent = () => {
-    if (!eventName || !eventDate || !endDate) {
-      alert(
-        "Por favor, completa todos los campos antes de agregar el trabajo."
-      );
-      return;
-    }
+    // Effect para cargar los datos del trabajo si estamos en modo edición
+    useEffect(() => {
+      if (jobToEdit) {
+        setEventName(jobToEdit.name);
+        setEventDate(dayjs(jobToEdit.startDate).toDate());
+        setEndDate(dayjs(jobToEdit.endDate).toDate());
+        console.log(jobToEdit);
+        
+      }
+    }, [jobToEdit]);
 
-    const formattedStartDate = dayjs(eventDate).format("YYYY-MM-DD");
-    const formattedEndDate = dayjs(endDate).format("YYYY-MM-DD");
-
-    // Despacha los datos
-    dispatch(
-      addJob({
-        name: eventName,
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
-      })
-    );
-
-    // Resetea el estado
-    setEventName("");
-    setEventDate(null);
-    setEndDate(null);
-    setModalVisible(false);
-  };
+    const handleSaveEvent = () => {
+      if (!eventName || !eventDate || !endDate) {
+        alert("Por favor, completa todos los campos antes de guardar el trabajo.");
+        return;
+      }
+    
+      const formattedStartDate = dayjs(eventDate).format("YYYY-MM-DD");
+      const formattedEndDate = dayjs(endDate).format("YYYY-MM-DD");
+    
+      if (jobToEdit) {
+        // Estamos en modo edición: enviar el id junto a los nuevos datos
+        dispatch(
+          updateJob(jobToEdit.id, {
+            id: jobToEdit.id, // Se envía el id para identificar el trabajo
+            name: eventName,
+            startDate: formattedStartDate,
+            endDate: formattedEndDate,
+          })
+        );        
+      } else {
+        // Si fuera agregar un nuevo trabajo (aunque aquí nos interesa la edición)
+        dispatch(
+          addJob({
+            name: eventName,
+            startDate: formattedStartDate,
+            endDate: formattedEndDate,
+          })
+        );
+      }
+    
+      setEventName("");
+      setEventDate(null);
+      setEndDate(null);
+      setModalVisible(false);
+    };
 
   return (
     <Modal
@@ -82,9 +102,9 @@ const EventModal = ({ visible, setModalVisible }) => {
           <Button
             style={styles.buttonOpen}
             mode="contained"
-            onPress={handleAddEvent}
+            onPress={handleSaveEvent}
           >
-            <Text>Agregar</Text>
+            <Text>{jobToEdit ? "Editar" : "Agregar"}</Text>
           </Button>
           {/* Cerrar el modal */}
         </View>

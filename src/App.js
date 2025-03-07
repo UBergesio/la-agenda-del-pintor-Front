@@ -9,7 +9,7 @@ import { Provider } from "react-redux";
 import store from "./Redux/store/store";
 
 //Screens
-import Navigation from "./Components/Navigation";
+import Navigation from "./Components/Navigation/Navigation";
 
 export default function App() {
   return (

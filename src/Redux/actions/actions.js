@@ -1,9 +1,24 @@
 import axios from "axios";
+// Types
 import { ADD_JOB } from "../types/types";
-
 import { ADD_ALL_DATES } from "../types/types";
+import { UPDATE_JOB } from "../types/types";
+
 
 const ENDPOINT = "http://192.168.0.175:3001/";
+
+export const updateJob = (jobId, updatedData) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.put(`${ENDPOINT}job/${jobId}`, updatedData);
+      const {data} = response
+      dispatch({ type: UPDATE_JOB, payload: data });
+    } catch (error) {
+      console.error(" ESTE ERROR Error al actualizar el trabajo:", error);
+      alert(error.message);
+    }
+  };
+};
 
 export const addJob = (job) => {
   const { name, startDate, endDate } = job;

@@ -3,7 +3,7 @@ import { View, Text } from "react-native";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { StyleSheet } from "react-native";
-import localeObject from "../../utils/Locale";
+import localeObesject from "../../utils/Locale";
 
 
 const DatePicker = ({onStartDateChange, onEndDateChange}) => {

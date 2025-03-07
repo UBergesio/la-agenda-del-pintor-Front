@@ -4,14 +4,14 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 
 // Screens
-import HomeScreen from "../Screens/HomeScreen";
-import CalendarScreen from "../Screens/CalendarScreen";
-import BudgetScreen from "../Screens/BudgetScreen";
-import ProfileScreen from "../Screens/ProfileScreen";
+import HomeScreen from "../../Screens/HomeScreen";
+import CalendarScreen from "../../Screens/CalendarScreen";
+import BudgetScreen from "../../Screens/BudgetScreen";
+import ProfileScreen from "../../Screens/ProfileScreen";
 
 // Componentes personalizados
-import CustomHeader from "./CustomHeader"; // Componente para el encabezado
-import ProfileDrawer from "./ProfileDrawer"; // Componente para el Drawer
+import CustomHeader from "../CustomHeader/CustomHeader"; // Componente para el encabezado
+import ProfileDrawer from "../ProfileDrawer/ProfileDrawer"; // Componente para el Drawer
 
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();

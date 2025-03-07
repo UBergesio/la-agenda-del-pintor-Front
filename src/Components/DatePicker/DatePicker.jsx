@@ -1,17 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text } from "react-native";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
 import { StyleSheet } from "react-native";
 import localeObesject from "../../utils/Locale";
 
-
-const DatePicker = ({onStartDateChange, onEndDateChange}) => {
+const DatePicker = ({
+  initialStartDate,
+  initialEndDate,
+  onStartDateChange,
+  onEndDateChange,
+}) => {
   const [range, setRange] = useState({
     startDate: undefined,
     endDate: undefined,
   });
 
+  // Este efecto se dispara solo cuando se cambia el trabajo a editar
+  useEffect(() => {
+    // Si recibimos valores iniciales (por ejemplo, al abrir el modal en edición), los usamos.
+    if (initialStartDate && initialEndDate) {
+      setRange({
+        startDate: initialStartDate,
+        endDate: initialEndDate,
+      });
+    }
+    // Dependemos solo de los valores iniciales, no de range.
+  }, []);
 
   const handleDateChange = (params) => {
     setRange({
@@ -24,7 +39,6 @@ const DatePicker = ({onStartDateChange, onEndDateChange}) => {
     if (params.endDate) onEndDateChange(params.endDate);
   };
 
-
   return (
     <View style={styles.container}>
       <DateTimePicker
@@ -34,7 +48,6 @@ const DatePicker = ({onStartDateChange, onEndDateChange}) => {
         startDate={range.startDate}
         endDate={range.endDate}
         onChange={handleDateChange}
-        
       />
       <View>
         <Text>
@@ -43,7 +56,7 @@ const DatePicker = ({onStartDateChange, onEndDateChange}) => {
           </Text>
           {range.startDate
             ? dayjs(range.startDate).format("  LLLL")
-            : "No seleccionado"}
+            : "  No seleccionado"}
         </Text>
         <Text>
           <Text style={{ fontWeight: "bold", textDecorationLine: "underline" }}>
@@ -51,7 +64,7 @@ const DatePicker = ({onStartDateChange, onEndDateChange}) => {
           </Text>
           {range.endDate
             ? dayjs(range.endDate).format("  LLLL")
-            : "No seleccionado"}
+            : "  No seleccionado"}
         </Text>
       </View>
     </View>
@@ -59,7 +72,7 @@ const DatePicker = ({onStartDateChange, onEndDateChange}) => {
 };
 
 const styles = StyleSheet.create({
-/*   container: {
+  /*   container: {
     height: "90%"
   }, */
 });
